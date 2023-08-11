@@ -1,7 +1,7 @@
 import useQuery from "../../hooks/useQuery";
 import { apiML } from "../../apis/apiML";
 import { useState } from "react";
-import { RespTokenType } from "src/types";
+import { RespTokenType } from "src/types/respToken";
 
 const Redirect = () => {
   const query = useQuery();
