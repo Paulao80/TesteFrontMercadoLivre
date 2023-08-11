@@ -1,9 +1,12 @@
-import { useParams } from "react-router-dom";
+import useQuery from "../../hooks/useQuery";
 
 const Redirect = () => {
-  const { code, state } = useParams();
-  console.log("🚀 ~ file: index.tsx:5 ~ Redirect ~ code:", code);
-  console.log("🚀 ~ file: index.tsx:5 ~ Redirect ~ state:", state);
+  const query = useQuery();
+
+  const code = query.get("code");
+  console.log("🚀 ~ file: index.tsx:7 ~ Redirect ~ code:", code);
+  const state = query.get("state");
+  console.log("🚀 ~ file: index.tsx:9 ~ Redirect ~ state:", state);
 
   return <div>Hello world!</div>;
 };
