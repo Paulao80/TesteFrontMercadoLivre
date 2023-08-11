@@ -8,6 +8,7 @@ const Redirect = () => {
 
   const onClick = async () => {
     const code = query.get("code");
+    const redirectUri = location.origin + location.pathname;
 
     if (!code) return;
     if (!clientId) return;
@@ -19,7 +20,7 @@ const Redirect = () => {
     params.append("client_id", clientId);
     params.append("client_secret", clientSecret);
     params.append("code", code);
-    params.append("redirect_uri", location.href);
+    params.append("redirect_uri", redirectUri);
 
     const resp = await apiML.post("/oauth/token", params);
     console.log("🚀 ~ file: index.tsx:25 ~ onClick ~ resp:", resp);
