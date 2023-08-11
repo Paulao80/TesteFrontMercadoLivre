@@ -1,12 +1,16 @@
 import useQuery from "../../hooks/useQuery";
 import { apiML } from "../../apis/apiML";
+import { useState } from "react";
+import { RespTokenType } from "src/types";
 
 const Redirect = () => {
   const query = useQuery();
   const clientId = import.meta.env.VITE_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 
-  const onClick = async () => {
+  const [accessToken, setAccessToken] = useState<string>();
+
+  const onClickObtemToken = async () => {
     const code = query.get("code");
     const redirectUri = location.origin + location.pathname;
 
@@ -22,14 +26,33 @@ const Redirect = () => {
     params.append("code", code);
     params.append("redirect_uri", redirectUri);
 
-    const resp = await apiML.post("/oauth/token", params);
-    console.log("🚀 ~ file: index.tsx:25 ~ onClick ~ resp:", resp);
+    const { data } = await apiML.post<RespTokenType>("/oauth/token", params);
+
+    if (!data) return;
+
+    setAccessToken(data.access_token);
+  };
+
+  const onClickObtemUserTest = async () => {
+    const resp = await apiML.post(
+      "/users/test_user",
+      {
+        site_id: "MLB",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("🚀 ~ file: index.tsx:48 ~ onClickObtemUserTest ~ resp:", resp);
   };
 
   return (
     <>
       <div>Redirect</div>
-      <button onClick={onClick}>Obtem token</button>
+      <button onClick={onClickObtemToken}>Obtem token</button>
+      <button onClick={onClickObtemUserTest}>Obtem Usuário de teste</button>
     </>
   );
 };
