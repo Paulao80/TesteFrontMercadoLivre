@@ -28,8 +28,6 @@ const Publicacao = () => {
       .get<CurrencyType[]>("/currencies/", {
         headers: {
           Authorization: `Bearer ${storage.value}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
         },
       })
       .then((resp) => setCurrencies(resp.data));
