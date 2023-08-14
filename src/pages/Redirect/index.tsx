@@ -46,6 +46,8 @@ const Redirect = () => {
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Access-Control-Allow-Origin":
+            "https://starlit-mousse-a5bb63.netlify.app",
         },
       }
     );
