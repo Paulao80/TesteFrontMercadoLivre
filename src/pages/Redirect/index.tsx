@@ -2,7 +2,7 @@ import useQuery from "../../hooks/useQuery";
 import { apiML } from "../../apis/apiML";
 import { useState } from "react";
 import { RespTokenType } from "src/types/respToken";
-import useLocalStorage from "src/hooks/useLocalStorage";
+import useLocalStorage from "/src/hooks/useLocalStorage";
 
 const Redirect = () => {
   const storage = useLocalStorage("accessToken");
