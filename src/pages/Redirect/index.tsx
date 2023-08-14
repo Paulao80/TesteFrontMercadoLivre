@@ -2,13 +2,16 @@ import useQuery from "../../hooks/useQuery";
 import { apiML } from "../../apis/apiML";
 import { useState } from "react";
 import { RespTokenType } from "src/types/respToken";
+import useLocalStorage from "src/hooks/useLocalStorage";
 
 const Redirect = () => {
+  const storage = useLocalStorage("accessToken");
   const query = useQuery();
+
   const clientId = import.meta.env.VITE_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
 
-  const [accessToken, setAccessToken] = useState<string>();
+  const [accessToken, setAccessToken] = useState<string>(storage.value);
 
   const onClickObtemToken = async () => {
     const code = query.get("code");
@@ -31,6 +34,7 @@ const Redirect = () => {
     if (!data) return;
 
     setAccessToken(data.access_token);
+    storage.updateItemStorage(data.access_token);
   };
 
   const onClickObtemUserTest = async () => {
@@ -51,6 +55,7 @@ const Redirect = () => {
   return (
     <>
       <div>Redirect</div>
+      <div>Acess Token: {storage.value}</div>
       <button onClick={onClickObtemToken}>Obtem token</button>
       <button onClick={onClickObtemUserTest}>Obtem Usuário de teste</button>
     </>
