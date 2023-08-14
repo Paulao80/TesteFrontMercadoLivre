@@ -11,14 +11,11 @@ const Publicacao = () => {
 
   useEffect(() => {
     apiML
-      .get<CategoryType[]>(
-        `/sites/MLB/domain_discovery/search?limit=1&q=outro`,
-        {
-          headers: {
-            Authorization: `Bearer ${storage.value}`,
-          },
-        }
-      )
+      .get<CategoryType[]>(`/sites/MLB/categories`, {
+        headers: {
+          Authorization: `Bearer ${storage.value}`,
+        },
+      })
       .then((resp) => {
         setCategoryes(resp.data);
       });
@@ -39,8 +36,8 @@ const Publicacao = () => {
         value={category}
       >
         {categoryes.map((item) => (
-          <option key={item.category_id} value={item.category_id}>
-            {item.category_name}
+          <option key={item.id} value={item.name}>
+            {item.name}
           </option>
         ))}
       </select>
