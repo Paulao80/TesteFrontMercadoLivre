@@ -25,11 +25,7 @@ const Publicacao = () => {
       .then((resp) => setCategoryes(resp.data));
 
     apiML
-      .get<CurrencyType[]>("/currencies", {
-        headers: {
-          Authorization: `Bearer ${storage.value}`,
-        },
-      })
+      .get<CurrencyType[]>("/currencies")
       .then((resp) => setCurrencies(resp.data));
   }, []);
 
