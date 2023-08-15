@@ -190,7 +190,7 @@ const Publicacao = () => {
         >
           <option></option>
           {currencies.map((item) => (
-            <option key={item.id} value={item.description}>
+            <option key={item.id} value={item.id}>
               {item.description}
             </option>
           ))}
