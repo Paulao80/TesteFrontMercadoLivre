@@ -1,0 +1,39 @@
+.container {
+    max-width: 600px;
+    width: 100%;
+    background-color: whitesmoke;
+    margin: auto;
+    padding: 10px;
+}
+
+.input-ctn {
+    width: 100%;
+    position: static;
+    margin: 7px 0;
+}
+
+.input-ctn > .ipt {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 2px 0;
+}
+
+.input-ctn > .ipt-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.input-ctn > .ipt-group > input {
+    width: calc(70% - 7px);
+}
+
+.input-ctn > .ipt-group > select {
+    width: calc(30% - 7px);
+}
+
+.btn-ctn {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
