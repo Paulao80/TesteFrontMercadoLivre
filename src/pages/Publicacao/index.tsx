@@ -34,6 +34,8 @@ const Publicacao = () => {
   const [pictures, setPictures] = useState<PictureType[]>([
     { source: undefined },
   ]);
+  const [brand, setBrand] = useState<string>();
+  const [model, setModel] = useState<string>();
 
   const warranty_time = useMemo(
     () => `${warranty_time_value} ${warranty_time_desc}`,
@@ -54,6 +56,20 @@ const Publicacao = () => {
     [warranty_type, warranty_time]
   );
 
+  const attributes = useMemo(
+    () => [
+      {
+        id: "BRAND",
+        value_name: brand,
+      },
+      {
+        id: "MODEL",
+        value_name: model,
+      },
+    ],
+    [brand, model]
+  );
+
   const formValues = useMemo(
     () => ({
       title,
@@ -66,6 +82,7 @@ const Publicacao = () => {
       listing_type_id,
       sale_terms,
       pictures,
+      attributes,
     }),
     [
       title,
@@ -77,6 +94,7 @@ const Publicacao = () => {
       listing_type_id,
       sale_terms,
       pictures,
+      attributes,
     ]
   );
 
@@ -274,6 +292,26 @@ const Publicacao = () => {
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="input-ctn">
+        <div>Brand</div>
+        <input
+          className="ipt"
+          type="text"
+          onChange={(e) => setBrand(e.target.value)}
+          value={brand}
+        />
+      </div>
+
+      <div className="input-ctn">
+        <div>Model</div>
+        <input
+          className="ipt"
+          type="text"
+          onChange={(e) => setModel(e.target.value)}
+          value={model}
+        />
       </div>
 
       <div className="input-ctn">
