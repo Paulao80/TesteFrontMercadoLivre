@@ -2,7 +2,7 @@ import "./style.css";
 import { useEffect, useMemo, useState } from "react";
 import useLocalStorage from "/src/hooks/useLocalStorage";
 import { apiML } from "/src/apis/apiML";
-import { CategoryType } from "src/types/category";
+import { CategoryDetailType, CategoryType } from "src/types/category";
 import { CurrencyType } from "src/types/currency";
 import { ListingType } from "src/types/listing";
 import {
@@ -16,12 +16,16 @@ const Publicacao = () => {
   const storage = useLocalStorage("accessToken");
 
   const [categoryes, setCategoryes] = useState<CategoryType[]>([]);
+  const [categoryChildrens, setCategoryChildrens] = useState<CategoryType[]>(
+    []
+  );
   const [currencies, setCurrencies] = useState<CurrencyType[]>([]);
   const [listingTypes, setListingTypes] = useState<ListingType[]>([]);
   const [warrantyTypes, setWarrantyTypes] = useState<ValuesSaleTermsType[]>([]);
   const [warrantyTimes, setWarrantyTimes] = useState<AllowedUnitsType[]>([]);
 
   const [title, setTitle] = useState<string>();
+  const [category_root_id, setCategory_root_id] = useState<string>();
   const [category_id, setCategory_id] = useState<string>();
   const [price, setPrice] = useState<number>();
   const [currency_id, setCurrency_id] = useState<string>();
@@ -100,7 +104,7 @@ const Publicacao = () => {
 
   console.log("🚀 ~ file: index.tsx:81 ~ Publicacao ~ formValues:", formValues);
 
-  async function getCategoryes() {
+  async function getCategoryesRoot() {
     const resp = await apiML.get<CategoryType[]>(`/sites/MLB/categories`, {
       headers: {
         Authorization: `Bearer ${storage.value}`,
@@ -122,25 +126,38 @@ const Publicacao = () => {
     setListingTypes(resp.data);
   }
 
+  async function getSalesTerms(category_root_id: string) {
+    const resp = await apiML.get<SaleTermsType[]>(
+      `/categories/${category_root_id}/sale_terms`
+    );
+
+    const wtp = resp?.data?.find((v) => v.id === "WARRANTY_TYPE")?.values;
+    if (wtp) setWarrantyTypes(wtp);
+
+    const wtm = resp?.data.find((v) => v.id === "WARRANTY_TIME")?.allowed_units;
+    if (wtm) setWarrantyTimes(wtm);
+  }
+
+  async function getCategoryChildrens(category_root_id: string) {
+    const resp = await apiML.get<CategoryDetailType>(
+      `/categories/${category_root_id}`
+    );
+
+    setCategoryChildrens(resp?.data?.children_categories);
+  }
+
   useEffect(() => {
-    Promise.all([getCategoryes(), getCurrencies(), getListingTypes()]);
+    Promise.all([getCategoryesRoot(), getCurrencies(), getListingTypes()]);
   }, []);
 
   useEffect(() => {
-    if (category_id) {
-      apiML
-        .get<SaleTermsType[]>(`/categories/${category_id}/sale_terms`)
-        .then((resp) => {
-          const wtp = resp?.data?.find((v) => v.id === "WARRANTY_TYPE")?.values;
-          if (wtp) setWarrantyTypes(wtp);
-
-          const wtm = resp?.data.find(
-            (v) => v.id === "WARRANTY_TIME"
-          )?.allowed_units;
-          if (wtm) setWarrantyTimes(wtm);
-        });
+    if (category_root_id) {
+      Promise.all([
+        getSalesTerms(category_root_id),
+        getCategoryChildrens(category_root_id),
+      ]);
     }
-  }, [category_id]);
+  }, [category_root_id]);
 
   function onChangePictures(value: string, index: number) {
     setPictures((prev) => {
@@ -176,12 +193,27 @@ const Publicacao = () => {
         <div>Category</div>
         <select
           className="ipt"
-          onChange={(e) => setCategory_id(e.target.value)}
-          value={category_id}
+          onChange={(e) => setCategory_root_id(e.target.value)}
+          value={category_root_id}
         >
           <option></option>
 
           {categoryes.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="ipt"
+          onChange={(e) => setCategory_id(e.target.value)}
+          value={category_id}
+          disabled={!category_root_id}
+        >
+          <option></option>
+
+          {categoryChildrens.map((item) => (
             <option key={item.id} value={item.id}>
               {item.name}
             </option>
@@ -261,7 +293,7 @@ const Publicacao = () => {
           className="ipt"
           onChange={(e) => setWarranty_type(e.target.value)}
           value={warranty_type}
-          disabled={!category_id}
+          disabled={!category_root_id}
         >
           {warrantyTypes.map((item) => (
             <option key={item.id} value={item.name}>
@@ -277,13 +309,13 @@ const Publicacao = () => {
           <input
             onChange={(e) => setWarranty_time_value(e.target.value)}
             value={warranty_time_value}
-            disabled={!category_id}
+            disabled={!category_root_id}
           />
 
           <select
             onChange={(e) => setWarranty_time_desc(e.target.value)}
             value={warranty_time_desc}
-            disabled={!category_id}
+            disabled={!category_root_id}
           >
             {warrantyTimes.map((item) => (
               <option key={item.id} value={item.name}>
