@@ -87,6 +87,9 @@ const Publicacao = () => {
       sale_terms,
       pictures,
       attributes,
+      shipping: {
+        mode: "me2",
+      },
     }),
     [
       title,
